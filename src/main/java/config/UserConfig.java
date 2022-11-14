@@ -4,6 +4,8 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import authentication.UserDao;
 import authentication.UserRegisterService;
@@ -51,8 +53,13 @@ public class UserConfig {
 	}
 	
 	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
 	public UserRegisterService userRegSvc() {
-		return new UserRegisterService(userDao());
+		return new UserRegisterService(userDao(), passwordEncoder());
 	}
 	
 	@Bean

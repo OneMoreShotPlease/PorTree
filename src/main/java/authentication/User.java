@@ -1,8 +1,11 @@
 package authentication;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User {
 	private Long user_id;
 	private String email;
+	@JsonIgnore
 	private String password;
 	private String name;
 	private String github;
@@ -17,10 +20,6 @@ public class User {
 		this.github = github;
 		this.field = field;
 		this.picture = picture;
-	}
-	
-	public boolean matchPassword(String password) { // UserAuthService에서 사용 (로그인 시)
-		return this.password.equals(password);
 	}
 	
 	void setId(Long id) {

@@ -1,5 +1,7 @@
 package authentication;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 public class UserAuthService {
 	private UserDao userDao;
 	
@@ -9,10 +11,12 @@ public class UserAuthService {
 	
 	public User authenticate(UserAuth auth) {
 		User user = userDao.selectByEmail(auth.getEmail());
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		
 		if (user == null) {
 			throw new WrongIdPasswordException();
 		}
-		if (!user.matchPassword(auth.getPassword())) {
+		if (!encoder.matches(user.getPassword(), auth.getPassword())) {
 			throw new WrongIdPasswordException();
 		}
 		return user;

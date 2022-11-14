@@ -12,7 +12,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +27,8 @@ import authentication.UserAuthService;
 import authentication.DuplicateUserException;
 import authentication.JwtManager;
 import authentication.WrongIdPasswordException;
+import authentication.RequestValidator;
+import authentication.AuthValidator;
 
 @RestController
 @RequestMapping("/api/user/")
@@ -52,9 +53,10 @@ public class RestUserController {
 	}
 	
 	// sign-up
-	@PostMapping("/signin")
+	@PostMapping("/signup")
 	public ResponseEntity<Object> newUser(
-			@RequestBody @Valid UserRequest userReq, Errors errors, HttpServletResponse response) {
+			@RequestBody UserRequest userReq, Errors errors, HttpServletResponse response) {
+		new RequestValidator().validate(userReq, errors);
 		// 에러 처리
 		if (errors.hasErrors()) {
 			String errorCodes = errors.getAllErrors()
@@ -88,7 +90,8 @@ public class RestUserController {
 	// login-in
 	@PostMapping("/login")
 	public ResponseEntity<Object> loginUser(
-			@RequestBody @Valid UserAuth auth, Errors errors, HttpServletResponse response) {
+			@RequestBody UserAuth auth, Errors errors, HttpServletResponse response) {
+		new AuthValidator().validate(auth, errors);
 		if (errors.hasErrors()) {
 			String errorCodes = errors.getAllErrors()
 					.stream()
@@ -117,12 +120,9 @@ public class RestUserController {
 	// log-out
 	@GetMapping("/logout")
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
-		Cookie[] cookies = request.getCookies();
-		
-		for (Cookie c: cookies) {
-			c.getValue()
-			c.setMaxAge(0);
-			response.addCookie(c);
-		}
+		Cookie cookie = new Cookie("token", null);
+		cookie.setValue(null);
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
 	}
 }
