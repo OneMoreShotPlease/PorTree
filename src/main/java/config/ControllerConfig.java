@@ -8,6 +8,9 @@ import authentication.UserDao;
 import authentication.UserRegisterService;
 import authentication.UserAuthService;
 import authentication.JwtManager;
+import portfolio.PortfolioDao;
+import portfolio.PortfolioRegisterService;
+import controller.RestPortfolioController;
 import controller.RestUserController;
 
 @Configuration
@@ -20,6 +23,10 @@ public class ControllerConfig {
 	@Autowired
 	private UserAuthService userAuthSvc;
 	@Autowired
+	private PortfolioDao portfolioDao;
+	@Autowired
+	private PortfolioRegisterService portfolioRegSvc;
+	@Autowired
 	private JwtManager jwtManager;
 
 	@Bean
@@ -28,6 +35,15 @@ public class ControllerConfig {
 		cont.setUserDao(userDao);
 		cont.setRegisterService(userRegSvc);
 		cont.setAuthService(userAuthSvc);
+		cont.setJwtManager(jwtManager);
+		return cont;
+	}
+	
+	@Bean
+	public RestPortfolioController restAPI2() {
+		RestPortfolioController cont = new RestPortfolioController();
+		cont.setPortfolioDao(portfolioDao);
+		cont.setRegisterService(portfolioRegSvc);
 		cont.setJwtManager(jwtManager);
 		return cont;
 	}

@@ -23,6 +23,8 @@
 			config.MvcConfig
 			config.ControllerConfig
 			config.UserConfig
+			config.PortfolioConfig
+			config.DatabaseConfig
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

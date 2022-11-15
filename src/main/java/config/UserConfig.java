@@ -2,6 +2,8 @@ package config;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,42 +16,11 @@ import authentication.JwtManager;
 
 @Configuration
 public class UserConfig {
-	
-	/*
-	@Value("${db.driver}")
-	private String driverClassName;
-	@Value("${db.url}")
-	private String url;
-	@Value("${db.username}")
-	private String username;
-	@Value("${db.password}")
-	private String password;
-	*/
-	private String driverClassName = "com.mysql.jdbc.Driver";
-	private String url = "jdbc:mysql://localhost/portree?characterEncoding=utf8&enabledTLSProtocols=TLSv1.2";
-	private String username = "portree";
-	private String password = "portree";
-	
-	@Bean
-	public DataSource dataSource() {
-		DataSource ds = new DataSource();
-		
-		ds.setDriverClassName("com.mysql.jdbc.Driver");
-		ds.setUrl(url);
-		ds.setUsername(username);
-		ds.setPassword(password);
-		ds.setInitialSize(2);
-		ds.setMaxActive(10);
-		ds.setTestWhileIdle(true);
-		ds.setMinEvictableIdleTimeMillis(60000 * 3);
-		ds.setTimeBetweenEvictionRunsMillis(10 * 1000);
-
-		return ds;
-	}
+	ApplicationContext ac = new AnnotationConfigApplicationContext(DatabaseConfig.class);
 	
 	@Bean
 	public UserDao userDao() {
-		return new UserDao(dataSource());
+		return new UserDao(ac.getBean(DataSource.class));
 	}
 	
 	@Bean

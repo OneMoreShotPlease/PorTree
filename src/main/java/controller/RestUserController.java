@@ -5,7 +5,6 @@ import java.net.URI;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.stream.Collectors;
 
 import org.springframework.validation.Errors;
@@ -121,7 +120,7 @@ public class RestUserController {
 	@GetMapping("/logout")
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		Cookie cookie = new Cookie("token", null);
-		cookie.setValue(null);
+		//cookie.setValue(null);
 		cookie.setMaxAge(0);
 		response.addCookie(cookie);
 	}

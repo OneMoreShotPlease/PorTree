@@ -49,19 +49,19 @@ public class JwtManager {
 	}
 	
 	// use Token (get Information)
-	private Claims getClaims(String token) {
+	public Claims getClaims(String token) {
 		return Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token).getBody();
 	}
 	
-	private String getIdFromToken(String token) {
-		return (String) getClaims(token).get("id");
+	public Long getIdFromToken(String token) {
+		return ((Number) getClaims(token).get("id")).longValue();
 	}
 	
-	private String getUsernameFromToken(String token) {
+	public String getUsernameFromToken(String token) {
 		return (String) getClaims(token).get("name");
 	}
 	
-	private String getEmailFromToken(String token) {
+	public String getEmailFromToken(String token) {
 		return (String) getClaims(token).get("email");
 	}
 }

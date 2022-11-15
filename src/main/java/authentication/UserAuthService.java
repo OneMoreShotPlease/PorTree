@@ -16,7 +16,7 @@ public class UserAuthService {
 		if (user == null) {
 			throw new WrongIdPasswordException();
 		}
-		if (!encoder.matches(user.getPassword(), auth.getPassword())) {
+		if (!encoder.matches(auth.getPassword(), user.getPassword())) {
 			throw new WrongIdPasswordException();
 		}
 		return user;
