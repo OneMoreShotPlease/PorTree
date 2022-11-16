@@ -120,7 +120,7 @@ public class RestUserController {
 	@GetMapping("/logout")
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		Cookie cookie = new Cookie("token", null);
-		//cookie.setValue(null);
+		cookie.setValue(null);
 		cookie.setMaxAge(0);
 		response.addCookie(cookie);
 	}

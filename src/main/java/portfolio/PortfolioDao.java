@@ -37,6 +37,28 @@ public class PortfolioDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
+	// 모든 portfolio 정보 불러오기
+	public List<Portfolio> selectAll() {
+		List<Portfolio> results = jdbcTemplate.query(
+				"select * from PORTFOLIO",
+				portfolioRowMapper);
+		return results;
+	}
+	
+	// portfolio_id로 특정 portfolio 정보 불러오기
+	public Portfolio selectById(Long id) {
+		List<Portfolio> results = jdbcTemplate.query(
+				"select * from PORTFOLIO where portfolio_id = ?", 
+				portfolioRowMapper, id);
+		return results.isEmpty()?null:results.get(0);
+	}
+
+	public void update(Portfolio portfolio) {
+		jdbcTemplate.update(
+				"update portfolio set title = ?, publish_date = ?, picture = ?, description = ? where portfolio_id = ?",
+				portfolio.getTitle(), Timestamp.valueOf(portfolio.getPublish_date()), portfolio.getPicture(), portfolio.getDescription(), portfolio.getPortfolio_id());
+	}
+	
 	public void insert(Portfolio portfolio) {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
@@ -61,17 +83,8 @@ public class PortfolioDao {
 		portfolio.setPortfolio_id(keyValue.longValue());
 	}
 	
-	public List<Portfolio> selectAll() {
-		List<Portfolio> results = jdbcTemplate.query(
-				"select * from PORTFOLIO",
-				portfolioRowMapper);
-		return results;
-	}
-	
-	public Portfolio selectById(Long id) {
-		List<Portfolio> results = jdbcTemplate.query(
-				"select * from PORTFOLIO where portfolio_id =?", 
-				portfolioRowMapper, id);
-		return results.isEmpty()?null:results.get(0);
+	public void delete(Long id) {
+		jdbcTemplate.update(
+				"delete from portfolio where portfolio_id = ?", id);
 	}
 }
