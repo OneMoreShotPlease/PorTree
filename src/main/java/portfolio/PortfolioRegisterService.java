@@ -11,14 +11,14 @@ public class PortfolioRegisterService {
 	
 	public Long regist(Long user_id, PortfolioRequest req) {
 		Portfolio portfolio = new Portfolio(
-				user_id, req.getTitle(), LocalDateTime.now(), req.getPicture(), req.getDescription());
+				user_id, req.getTitle(), LocalDateTime.now(), req.getGithub(), req.getDemo(), req.getCategory(), req.getDescription());
 		portfolioDao.insert(portfolio);
 		return portfolio.getPortfolio_id();
 	}
 	
 	public Long update(Long user_id, Long portfolio_id, PortfolioRequest req) {
 		Portfolio portfolio = new Portfolio(
-				user_id, req.getTitle(), LocalDateTime.now(), req.getPicture(), req.getDescription());
+				user_id, req.getTitle(), LocalDateTime.now(), req.getGithub(), req.getDemo(), req.getCategory(), req.getDescription());
 		portfolio.setPortfolio_id(portfolio_id);
 		portfolioDao.update(portfolio);
 		return portfolio.getPortfolio_id();

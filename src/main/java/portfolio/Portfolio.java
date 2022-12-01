@@ -7,15 +7,19 @@ public class Portfolio {
 	private Long user_id;
 	private String title;
 	private LocalDateTime publish_date;
-	private String picture = null;
+	private String github = null;
+	private String demo = null;
+	private String category = null;
 	private String description;
 	
 	public Portfolio(Long user_id, String title, LocalDateTime publish_date,
-			String picture, String description) {
+			String github, String demo, String category, String description) {
 		this.user_id = user_id;
 		this.title = title;
 		this.publish_date = publish_date;
-		this.picture = picture;
+		this.github = github;
+		this.demo = demo;
+		this.category = category;
 		this.description = description;
 	}
 	
@@ -38,8 +42,16 @@ public class Portfolio {
 		return publish_date;
 	}
 	
-	public String getPicture() {
-		return picture;
+	public String getGithub() {
+		return github;
+	}
+	
+	public String getDemo() {
+		return demo;
+	}
+	
+	public String getCategory() {
+		return category;
 	}
 	
 	public String getDescription() {

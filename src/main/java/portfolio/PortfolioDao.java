@@ -25,7 +25,9 @@ public class PortfolioDao {
 					rs.getLong("USER_ID"),
 					rs.getString("TITLE"),
 					rs.getTimestamp("PUBLISH_DATE").toLocalDateTime(),
-					rs.getString("PICTURE"),
+					rs.getString("GITHUB"),
+					rs.getString("DEMO"),
+					rs.getString("CATEGORY"),
 					rs.getString("DESCRIPTION")
 			);
 			portfolio.setPortfolio_id(rs.getLong("PORTFOLIO_ID"));
@@ -48,15 +50,15 @@ public class PortfolioDao {
 	// portfolio_id로 특정 portfolio 정보 불러오기
 	public Portfolio selectById(Long id) {
 		List<Portfolio> results = jdbcTemplate.query(
-				"select * from PORTFOLIO where portfolio_id = ?", 
+				"select * from PORTFOLIO where PORTFOLIO_ID = ?", 
 				portfolioRowMapper, id);
 		return results.isEmpty()?null:results.get(0);
 	}
 
 	public void update(Portfolio portfolio) {
 		jdbcTemplate.update(
-				"update portfolio set title = ?, publish_date = ?, picture = ?, description = ? where portfolio_id = ?",
-				portfolio.getTitle(), Timestamp.valueOf(portfolio.getPublish_date()), portfolio.getPicture(), portfolio.getDescription(), portfolio.getPortfolio_id());
+				"update PORTFOLIO set TITLE = ?, PUBLISH_DATE = ?, GITHUB = ?, DEMO = ?, CATEGORY = ?, DESCRIPTION = ? where PORTFOLIO_ID = ?",
+				portfolio.getTitle(), Timestamp.valueOf(portfolio.getPublish_date()), portfolio.getGithub(), portfolio.getDemo(), portfolio.getCategory(), portfolio.getDescription(), portfolio.getPortfolio_id());
 	}
 	
 	public void insert(Portfolio portfolio) {
@@ -66,15 +68,17 @@ public class PortfolioDao {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement psmt = con.prepareStatement(
-						"insert into portfolio (user_id, title, publish_date, picture, description) " +
-						"values (?, ?, ?, ?, ?)",
+						"insert into PORTFOLIO (USER_ID, TITLE, PUBLISH_DATE, GITHUB, DEMO, CATEGORY, DESCRIPTION) " +
+						"values (?, ?, ?, ?, ?, ?, ?)",
 						new String[] {"PORTFOLIO_ID"}
 				);
 				psmt.setLong(1,  portfolio.getUser_id());
 				psmt.setString(2,  portfolio.getTitle());
 				psmt.setTimestamp(3, Timestamp.valueOf(portfolio.getPublish_date()));
-				psmt.setString(4, portfolio.getPicture());
-				psmt.setString(5, portfolio.getDescription());
+				psmt.setString(4, portfolio.getGithub());
+				psmt.setString(5, portfolio.getDemo());
+				psmt.setString(6, portfolio.getCategory());
+				psmt.setString(7, portfolio.getDescription());
 				
 				return psmt;
 			}
@@ -85,6 +89,6 @@ public class PortfolioDao {
 	
 	public void delete(Long id) {
 		jdbcTemplate.update(
-				"delete from portfolio where portfolio_id = ?", id);
+				"delete from PORTFOLIO where PORTFOLIO_ID = ?", id);
 	}
 }

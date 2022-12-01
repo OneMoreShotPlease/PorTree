@@ -3,7 +3,9 @@ package portfolio;
 public class PortfolioRequest {
 
 	private String title;
-	private String picture;
+	private String github;
+	private String demo;
+	private String category;
 	private String description;
 	
 	public String getTitle() {
@@ -13,11 +15,25 @@ public class PortfolioRequest {
 		this.title = title;
 	}
 	
-	public String getPicture() {
-		return picture;
+	public String getGithub() {
+		return github;
 	}
-	public void setPicture(String picture) {
-		this.picture = picture;
+	public void setGithub(String github) {
+		this.github = github;
+	}
+	
+	public String getDemo() {
+		return demo;
+	}
+	public void setDemo(String demo) {
+		this.demo = demo;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 	public String getDescription() {
