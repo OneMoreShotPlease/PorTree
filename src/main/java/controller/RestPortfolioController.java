@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import authentication.JwtManager;
+import io.swagger.annotations.ApiOperation;
 import portfolio.RequestValidator;
 import portfolio.Portfolio;
 import portfolio.PortfolioDao;
@@ -46,12 +47,14 @@ public class RestPortfolioController {
 	
 	// 포트폴리오 목록 보기
 	@GetMapping()
+	@ApiOperation(value = "전체 포트폴리오 조회")
 	public List<Portfolio> portfolio() {
 		return portfolioDao.selectAll();
 	}
 	
 	// 포트폴리오 작성
 	@PostMapping()
+	@ApiOperation(value = "포트폴리오 작성")
 	public ResponseEntity<Object> newPortfolio(
 			@CookieValue("token") String token, @RequestBody PortfolioRequest req, Errors errors) {
 		new RequestValidator().validate(req, errors);
@@ -70,6 +73,7 @@ public class RestPortfolioController {
 	
 	// 특정 포트폴리오 목록 보기
 	@GetMapping("/{portfolio_id}")
+	@ApiOperation(value = "특정 포트폴리오 조회")
 	public ResponseEntity<Object> portfolio(@PathVariable Long portfolio_id) {
 		Portfolio portfolio = portfolioDao.selectById(portfolio_id);
 		if (portfolio == null) {
@@ -81,6 +85,7 @@ public class RestPortfolioController {
 	
 	// 특정 포트폴리오 수정
 	@PostMapping("/{portfolio_id}")
+	@ApiOperation(value = "특정 포트폴리오 수정")
 	public ResponseEntity<Object> updatePortfolio(@PathVariable Long portfolio_id, @CookieValue("token") String token, @RequestBody PortfolioRequest req, Errors errors) {
 		new RequestValidator().validate(req, errors);
 		if (errors.hasErrors()) {
@@ -111,6 +116,7 @@ public class RestPortfolioController {
 	
 	// 특정 포트폴리오 삭제
 	@DeleteMapping("/{portfolio_id}")
+	@ApiOperation(value = "특정 포트폴리오 삭제")
 	public ResponseEntity<Object> deletePortfolio(@PathVariable Long portfolio_id, @CookieValue("token") String token) {
 		Portfolio portfolio = portfolioDao.selectById(portfolio_id);
 		if (portfolio == null) {

@@ -26,6 +26,7 @@ import authentication.UserAuthService;
 import authentication.DuplicateUserException;
 import authentication.JwtManager;
 import authentication.WrongIdPasswordException;
+import io.swagger.annotations.ApiOperation;
 import authentication.RequestValidator;
 import authentication.AuthValidator;
 
@@ -53,6 +54,7 @@ public class RestUserController {
 	
 	// sign-up
 	@PostMapping("/signup")
+	@ApiOperation(value="회원가입")
 	public ResponseEntity<Object> newUser(
 			@RequestBody UserRequest userReq, Errors errors, HttpServletResponse response) {
 		new RequestValidator().validate(userReq, errors);
@@ -77,6 +79,7 @@ public class RestUserController {
 	
 	// user-detail
 	@GetMapping("/{user_id}")
+	@ApiOperation(value = "마이페이지")
 	public ResponseEntity<Object> user(@PathVariable Long user_id) {
 		User user = userDao.selectById(user_id);
 		if (user == null) {
@@ -88,6 +91,7 @@ public class RestUserController {
 	
 	// login-in
 	@PostMapping("/login")
+	@ApiOperation(value = "로그인")
 	public ResponseEntity<Object> loginUser(
 			@RequestBody UserAuth auth, Errors errors, HttpServletResponse response) {
 		new AuthValidator().validate(auth, errors);
@@ -118,6 +122,7 @@ public class RestUserController {
 	
 	// log-out
 	@GetMapping("/logout")
+	@ApiOperation(value = "로그아웃")
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		Cookie cookie = new Cookie("token", null);
 		cookie.setValue(null);

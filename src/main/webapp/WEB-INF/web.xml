@@ -25,6 +25,7 @@
 			config.UserConfig
 			config.PortfolioConfig
 			config.DatabaseConfig
+			config.SwaggerConfig
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
