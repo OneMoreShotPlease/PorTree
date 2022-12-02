@@ -20,7 +20,7 @@ public class UserRegisterService {
 		String password = passwordEncoder.encode(req.getPassword());
 		// 회원가입 시 picture은 안 넣어도 되도록
 		User newUser = new User(
-				req.getEmail(), password, req.getName(),
+				req.getEmail(), password, null, req.getName(),
 				null, null, null); 
 		userDao.insert(newUser);
 		return newUser.getId();

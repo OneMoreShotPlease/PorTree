@@ -14,16 +14,21 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtManager {
 
 	private final String securityKey = "Hyunwoo Babo";
-	private final Long expiredTime = 1000 * 60L * 60L * 3L; // 3시간
+	private final Long Access_Token_Duration = 1000 * 60L * 60L * 1L; // 1시간
+	private final Long Refresh_Token_Duration = 1000 * 60L * 60L * 1L * 24L * 14L; // 2주
 	
 	// generate Token -> Login-in
-	public String generateJwtToken(User user) {
+	public String generateJwtToken(User user, boolean isAccess) {
 		Date now = new Date();
+		Long duration = 0L;
+		if (isAccess) duration = Access_Token_Duration;
+		else duration = Refresh_Token_Duration;
+		
 		return Jwts.builder()
 				.setSubject(user.getName())
 				.setHeader(createHeader())
 				.setClaims(createClaims(user))
-				.setExpiration(new Date(now.getTime() + expiredTime))
+				.setExpiration(new Date(now.getTime() + duration))
 				.signWith(SignatureAlgorithm.HS256, securityKey)
 				.compact();
 	}

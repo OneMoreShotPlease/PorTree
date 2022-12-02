@@ -105,14 +105,22 @@ public class RestUserController {
 		try {
 			User user = authService.authenticate(auth);
 			
-			// JWT token
-			final String token = jwtManager.generateJwtToken(user);
+			// JWT Access Token
+			final String access_token = jwtManager.generateJwtToken(user, true);
+			// JWT Refresh Token
+			final String refresh_token = jwtManager.generateJwtToken(user, false);
 			
-			// Cookie에 보관
+			// Refresh Token DB에 저장
+			userDao.updateRefreshToken(user, refresh_token);
+			
+			/* Cookie에 보관
 			Cookie cookie = new Cookie("token", token);
 			cookie.setMaxAge(60 * 60 * 24 * 30); // 30일간 유지
 			cookie.setHttpOnly(true);
 			response.addCookie(cookie);
+			*/
+			response.setHeader("access_token", access_token);
+			response.setHeader("refresh_token", refresh_token);
 			
 			return ResponseEntity.status(HttpStatus.OK).body(user);
 		} catch (WrongIdPasswordException wrongEx) {

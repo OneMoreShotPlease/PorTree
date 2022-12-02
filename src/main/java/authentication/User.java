@@ -11,11 +11,14 @@ public class User {
 	private String github;
 	private String field;
 	private String picture;
+	@JsonIgnore
+	private String refreshToken;
 	
-	public User(String email, String password, String name,
+	public User(String email, String password, String refreshToken, String name,
 			String github, String field, String picture) {
 		this.email = email;
 		this.password = password;
+		this.refreshToken = refreshToken;
 		this.name = name;
 		this.github = github;
 		this.field = field;
@@ -35,6 +38,10 @@ public class User {
 	
 	public String getPassword() {
 		return password;
+	}
+	
+	public String getRefreshToken() {
+		return refreshToken;
 	}
 	
 	public String getName() {

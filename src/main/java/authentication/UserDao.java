@@ -24,6 +24,7 @@ public class UserDao {
 					User user = new User(
 							rs.getString("EMAIL"),
 							rs.getString("PASSWORD"),
+							rs.getString("REFRESH_TOKEN"),
 							rs.getString("NAME"),
 							rs.getString("GITHUB"),
 							rs.getString("FIELD"),
@@ -68,6 +69,12 @@ public class UserDao {
 		}, keyHolder);
 		Number keyValue = keyHolder.getKey(); // ID 값 넣어주기
 		user.setId(keyValue.longValue());
+	}
+	
+	// JWT Refresh Token Update
+	public void updateRefreshToken(User user, String refresh_token) {
+		jdbcTemplate.update("update `USER` set REFRESH_TOKEN = ? where USER_ID = ?",
+				refresh_token, user.getId());
 	}
 	
 	public User selectById(Long user_id) {
