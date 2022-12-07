@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import authentication.UserDao;
 import authentication.UserRegisterService;
 import authentication.UserAuthService;
+import authentication.JwtFilter;
 import authentication.JwtManager;
 
 @Configuration
@@ -41,5 +42,10 @@ public class UserConfig {
 	@Bean
 	public JwtManager jwtManager() {
 		return new JwtManager();
+	}
+	
+	@Bean
+	public JwtFilter jwtFilter() {
+		return new JwtFilter(jwtManager());
 	}
 }

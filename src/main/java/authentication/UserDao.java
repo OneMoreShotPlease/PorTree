@@ -76,6 +76,15 @@ public class UserDao {
 		jdbcTemplate.update("update `USER` set REFRESH_TOKEN = ? where USER_ID = ?",
 				refresh_token, user.getId());
 	}
+	// JWT Refresh Token Read
+	public String getRefreshToken(User user) {
+		String results = jdbcTemplate.queryForObject("select REFRESH_TOKEN from `USER` where USER_ID = ?", new Object[] {user.getId()}, String.class);
+		return results.isEmpty() ? null : results;
+	}
+	// JWT Refresh Token Delete
+	public void deleteRefreshToken(Long user_id) {
+		jdbcTemplate.update("update `USER` set REFRESH_TOKEN = NULL where USER_ID = ?", user_id);
+	}
 	
 	public User selectById(Long user_id) {
 		List<User> results = jdbcTemplate.query(

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import authentication.User;
 import authentication.UserDao;
@@ -131,10 +133,16 @@ public class RestUserController {
 	// log-out
 	@GetMapping("/logout")
 	@ApiOperation(value = "로그아웃")
-	public void logout(HttpServletRequest request, HttpServletResponse response) {
-		Cookie cookie = new Cookie("token", null);
-		cookie.setValue(null);
-		cookie.setMaxAge(0);
-		response.addCookie(cookie);
+	public ResponseEntity<Object> logout(HttpServletRequest request, HttpServletResponse response) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Long user_id;
+		try {
+			user_id = (Long) authentication.getPrincipal();
+			userDao.deleteRefreshToken(user_id);
+		} catch (NullPointerException e) {
+			String errorCodes = "Token Expired";
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
+		}	
+	return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

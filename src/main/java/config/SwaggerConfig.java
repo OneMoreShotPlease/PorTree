@@ -45,11 +45,23 @@ public class SwaggerConfig {
 	@Bean
 	public Docket Portfolioapi() {
 		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("포트폴리오")
+				.groupName("포트폴리오 (일반)")
 				.apiInfo(apiInfo())
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("controller"))
-				.paths(PathSelectors.regex("/api/portfolio.*"))
+				.paths(PathSelectors.regex("/api/portfolio/all.*"))
+				.apis(RequestHandlerSelectors.any())
+				.build();
+	}
+	
+	@Bean
+	public Docket PortfolioAuthapi() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("포트폴리오 (권한)")
+				.apiInfo(apiInfo())
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("controller"))
+				.paths(PathSelectors.regex("/api/portfolio/auth.*"))
 				.apis(RequestHandlerSelectors.any())
 				.build();
 	}

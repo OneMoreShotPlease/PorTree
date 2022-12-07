@@ -11,6 +11,8 @@ import authentication.JwtManager;
 import portfolio.PortfolioDao;
 import portfolio.PortfolioRegisterService;
 import controller.RestPortfolioController;
+import controller.RestJwtController;
+import controller.RestPortfolioAuthController;
 import controller.RestUserController;
 
 @Configuration
@@ -43,8 +45,23 @@ public class ControllerConfig {
 	public RestPortfolioController restAPI2() {
 		RestPortfolioController cont = new RestPortfolioController();
 		cont.setPortfolioDao(portfolioDao);
+		return cont;
+	}
+	
+	
+	@Bean
+	public RestPortfolioAuthController authRestAPI2() {
+		RestPortfolioAuthController cont = new RestPortfolioAuthController();
+		cont.setPortfolioDao(portfolioDao);
 		cont.setRegisterService(portfolioRegSvc);
+		return cont;
+	}
+	
+	@Bean
+	public RestJwtController jwtRestAPI() {
+		RestJwtController cont = new RestJwtController();
 		cont.setJwtManager(jwtManager);
+		cont.setUserDao(userDao);
 		return cont;
 	}
 }

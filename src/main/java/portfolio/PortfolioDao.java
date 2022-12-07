@@ -55,6 +55,16 @@ public class PortfolioDao {
 		return results.isEmpty()?null:results.get(0);
 	}
 
+	// Title, Description으로 특정 portfolio 정보 불러오기
+	public List<Portfolio> selectBySearch(String search) {
+		if (search.isEmpty())
+			return null;
+		String sql = "select * from PORTFOLIO where TITLE LIKE '%" + search + "%' or DESCRIPTION LIKE '%" + search + "%'";
+		List<Portfolio> results = jdbcTemplate.query(
+				sql, portfolioRowMapper);
+		return results.isEmpty()?null:results;
+	}
+	
 	public void update(Portfolio portfolio) {
 		jdbcTemplate.update(
 				"update PORTFOLIO set TITLE = ?, PUBLISH_DATE = ?, GITHUB = ?, DEMO = ?, CATEGORY = ?, DESCRIPTION = ? where PORTFOLIO_ID = ?",
