@@ -24,6 +24,7 @@
 			config.ControllerConfig
 			config.UserConfig
 			config.PortfolioConfig
+			config.CommentConfig
 			config.DatabaseConfig
 			config.SwaggerConfig
 			</param-value>

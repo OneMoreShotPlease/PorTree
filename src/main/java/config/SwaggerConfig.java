@@ -65,6 +65,30 @@ public class SwaggerConfig {
 				.apis(RequestHandlerSelectors.any())
 				.build();
 	}
+
+	@Bean
+	public Docket Commentapi() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("댓글 (일반)")
+				.apiInfo(apiInfo())
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("controller"))
+				.paths(PathSelectors.regex("/api/comment/all.*"))
+				.apis(RequestHandlerSelectors.any())
+				.build();
+	}
+	
+	@Bean
+	public Docket CommentAuthapi() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("댓글 (권한)")
+				.apiInfo(apiInfo())
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("controller"))
+				.paths(PathSelectors.regex("/api/comment/auth.*"))
+				.apis(RequestHandlerSelectors.any())
+				.build();
+	}
 	
 	public ApiInfo apiInfo() {
 		return new ApiInfoBuilder()

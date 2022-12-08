@@ -77,7 +77,7 @@ public class RestPortfolioAuthController {
 	// 특정 포트폴리오 수정
 	@PostMapping("/{portfolio_id}")
 	@ApiOperation(value = "특정 포트폴리오 수정")
-	public ResponseEntity<Object> updatePortfolio(@PathVariable Long portfolio_id, @RequestHeader(value = "Authorization") String authorization, @RequestBody PortfolioRequest req, Errors errors) {
+	public ResponseEntity<Object> updatePortfolio(@PathVariable Long portfolio_id, @RequestBody PortfolioRequest req, Errors errors) {
 		new RequestValidator().validate(req, errors);
 		if (errors.hasErrors()) {
 			String errorCodes = errors.getAllErrors()
@@ -116,7 +116,7 @@ public class RestPortfolioAuthController {
 	// 특정 포트폴리오 삭제
 	@DeleteMapping("/{portfolio_id}")
 	@ApiOperation(value = "특정 포트폴리오 삭제")
-	public ResponseEntity<Object> deletePortfolio(@PathVariable Long portfolio_id, @RequestHeader(value = "Authorization") String authorization) {
+	public ResponseEntity<Object> deletePortfolio(@PathVariable Long portfolio_id) {
 		Portfolio portfolio = portfolioDao.selectById(portfolio_id);
 		if (portfolio == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -10,7 +10,10 @@ import authentication.UserAuthService;
 import authentication.JwtManager;
 import portfolio.PortfolioDao;
 import portfolio.PortfolioRegisterService;
+import comment.CommentDao;
+import comment.CommentRegisterService;
 import controller.RestPortfolioController;
+import controller.RestCommentController;
 import controller.RestJwtController;
 import controller.RestPortfolioAuthController;
 import controller.RestUserController;
@@ -28,6 +31,10 @@ public class ControllerConfig {
 	private PortfolioDao portfolioDao;
 	@Autowired
 	private PortfolioRegisterService portfolioRegSvc;
+	@Autowired
+	private CommentDao commentDao;
+	@Autowired
+	private CommentRegisterService commentRegSvc;
 	@Autowired
 	private JwtManager jwtManager;
 
@@ -54,6 +61,15 @@ public class ControllerConfig {
 		RestPortfolioAuthController cont = new RestPortfolioAuthController();
 		cont.setPortfolioDao(portfolioDao);
 		cont.setRegisterService(portfolioRegSvc);
+		return cont;
+	}
+	
+	@Bean
+	public RestCommentController commentRestAPI() {
+		RestCommentController cont = new RestCommentController();
+		cont.setCommentDao(commentDao);
+		cont.setRegisterService(commentRegSvc);
+		cont.setPortfolioDao(portfolioDao);
 		return cont;
 	}
 	
