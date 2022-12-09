@@ -76,7 +76,7 @@ public class RestCommentController {
 		return ResponseEntity.created(uri).build();
 	}
 	
-	// 댓글 보기
+	// 댓글 수정
 	@PostMapping("/auth/{comment_id}")
 	@ApiOperation(value = "댓글 수정")
 	public ResponseEntity<Object> updateComment(@PathVariable Long comment_id, @RequestBody HashMap<String, String> contents) {

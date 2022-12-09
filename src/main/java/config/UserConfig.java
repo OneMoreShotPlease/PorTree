@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import authentication.UserDao;
+import authentication.SimpleUserDao;
 import authentication.UserRegisterService;
 import authentication.UserAuthService;
 import authentication.JwtFilter;
@@ -22,6 +23,11 @@ public class UserConfig {
 	@Bean
 	public UserDao userDao() {
 		return new UserDao(ac.getBean(DataSource.class));
+	}
+	
+	@Bean
+	public SimpleUserDao simpleUserDao() {
+		return new SimpleUserDao(ac.getBean(DataSource.class));
 	}
 	
 	@Bean

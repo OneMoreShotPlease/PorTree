@@ -26,7 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String servletPath = request.getServletPath();
-		String[] no_auth_urls = {"/api/user/login", "/api/user/signup", "/api/portfolio/all", "/api/comment/all"};
+		String[] no_auth_urls = {"/api/user/login", "/api/user/signup", "/api/portfolio/all", "/api/comment/all", "/api/like/all"};
 		boolean isAccessFilter = true;
 		for (String url: no_auth_urls) {
 			if (servletPath.contains(url)) {

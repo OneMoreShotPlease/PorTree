@@ -25,6 +25,7 @@
 			config.UserConfig
 			config.PortfolioConfig
 			config.CommentConfig
+			config.LikeConfig
 			config.DatabaseConfig
 			config.SwaggerConfig
 			</param-value>

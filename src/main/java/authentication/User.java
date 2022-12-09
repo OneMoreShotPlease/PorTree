@@ -2,34 +2,23 @@ package authentication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class User {
-	private Long user_id;
+public class User extends SimpleUser {
 	private String email;
 	@JsonIgnore
 	private String password;
-	private String name;
 	private String github;
 	private String field;
-	private String picture;
 	@JsonIgnore
 	private String refreshToken;
 	
 	public User(String email, String password, String refreshToken, String name,
 			String github, String field, String picture) {
+		super(name, picture);
 		this.email = email;
 		this.password = password;
 		this.refreshToken = refreshToken;
-		this.name = name;
 		this.github = github;
 		this.field = field;
-		this.picture = picture;
-	}
-	
-	void setId(Long id) {
-		this.user_id = id;
-	}
-	public Long getId() {
-		return user_id;
 	}
 	
 	public String getEmail() {
@@ -44,19 +33,11 @@ public class User {
 		return refreshToken;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
 	public String getGithub() {
 		return github;
 	}
 	
 	public String getField() {
 		return field;
-	}
-	
-	public String getPicture() {
-		return picture;
 	}
 }

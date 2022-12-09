@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import authentication.UserDao;
+import authentication.SimpleUserDao;
 import authentication.UserRegisterService;
 import authentication.UserAuthService;
 import authentication.JwtManager;
@@ -12,9 +13,12 @@ import portfolio.PortfolioDao;
 import portfolio.PortfolioRegisterService;
 import comment.CommentDao;
 import comment.CommentRegisterService;
+import like.LikeDao;
+import like.LikeRegisterService;
 import controller.RestPortfolioController;
 import controller.RestCommentController;
 import controller.RestJwtController;
+import controller.RestLikeController;
 import controller.RestPortfolioAuthController;
 import controller.RestUserController;
 
@@ -23,6 +27,8 @@ public class ControllerConfig {
 	
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private SimpleUserDao simpleUserDao;
 	@Autowired
 	private UserRegisterService userRegSvc;
 	@Autowired
@@ -35,6 +41,10 @@ public class ControllerConfig {
 	private CommentDao commentDao;
 	@Autowired
 	private CommentRegisterService commentRegSvc;
+	@Autowired
+	private LikeDao likeDao;
+	@Autowired
+	private LikeRegisterService likeRegSvc;
 	@Autowired
 	private JwtManager jwtManager;
 
@@ -70,6 +80,16 @@ public class ControllerConfig {
 		cont.setCommentDao(commentDao);
 		cont.setRegisterService(commentRegSvc);
 		cont.setPortfolioDao(portfolioDao);
+		return cont;
+	}
+	
+	@Bean
+	public RestLikeController likeRestAPI() {
+		RestLikeController cont = new RestLikeController();
+		cont.setLikeDao(likeDao);
+		cont.setPortfolioDao(portfolioDao);
+		cont.setSimpleUserDao(simpleUserDao);
+		cont.setLikeRegisterService(likeRegSvc);
 		return cont;
 	}
 	

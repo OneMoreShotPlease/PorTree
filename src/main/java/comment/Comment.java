@@ -1,6 +1,7 @@
 package comment;
 
 import java.time.LocalDateTime;
+import authentication.SimpleUser;
 
 public class Comment {
 	private Long comment_id;
