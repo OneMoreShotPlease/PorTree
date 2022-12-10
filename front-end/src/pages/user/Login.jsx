@@ -1,10 +1,10 @@
 // // 로그인 페이지
 // // 프로젝트 나열 + 검색 페이지
 
-import React, { useState, useEffec, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import AuthContext from '../../context/AuthProvider';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCookies } from 'react-cookie';
 
@@ -73,8 +73,14 @@ const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [msg, setMsg] = useState('');
+    const [success, setSuccess] = useState(false);
+    const [errMsg, setErrMsg] = useState('');
+
+    const errRef = useRef();
+
+    useEffect(() => {
+        setErrMsg('');
+    }, [email, password]);
 
     //비밀번호 유효성 검사
     const checkPassword = (e) => {
@@ -92,40 +98,9 @@ const Login = () => {
         console.log('이메일 유효성 검사 :: ', regExp.test(e.target.value));
     };
 
-    const onSubmitAccount = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
         console.log(email, password);
-        // console.log('click login');
-        // let body = {
-        //     email,
-        //     password,
-        // };
-        // console.log(body);
-        // axios
-        //     .post('http://43.201.121.70:8080/portree/api/user/login', body)
-        //     .then((res) => {
-        //         let status = res.status;
-        //         if (status === 200) {
-        //             console.log('로그인');
-        //             setAuth(true);
-        //             console.log(res);
-        //             console.log(res.headers);
-        //             // cookie.set(res.headers['set-cookie']);
-        //             // console.log(res.h);
-        //             console.log(res.headers['set-cookie']);
-        //             setCookie('id', res.headers['token']);
-        //             navigate('/');
-        //         } else if (status === 401) {
-        //             console.log('unauthorized');
-        //         } else if (status === 403) {
-        //             console.log('Forbidden');
-        //         } else if (status === 404) {
-        //             console.log('Not Found');
-        //         } else {
-        //             console.log('???');
-        //         }
-        //     });
         try {
             const resp = await axios.post(
                 'http://43.201.121.70:8080/portree/api/user/login',
@@ -137,49 +112,70 @@ const Login = () => {
             );
             console.log(JSON.stringify(resp?.data));
             const accessToken = resp?.data?.accessToken;
-            const roles = resp?.data;
-            setAuth({ email, password, roles, accessToken });
+            const user = resp?.data;
+            setAuth({ email, password, user, accessToken });
+            setEmail('');
+            setPassword('');
+            setSuccess(true);
         } catch (err) {
-            let status = err.response?.Reactstatus;
-            if (status === 200) {
-                console.log('로그인');
-            } else if (status === 401) {
-                console.log('unauthorized');
+            let status = err.response?.status;
+            console.log(status);
+            // if (status === 200) {
+            //     console.log('로그인');
+            if (status === 401) {
+                // console.log('unauthorized');
+                setErrMsg('unauthorized');
             } else if (status === 403) {
-                console.log('Forbidden');
+                // console.log('Forbidden');
+                setErrMsg('Forbidden');
             } else if (status === 404) {
-                console.log('Not Found');
+                // console.log('Not Found');
+                setErrMsg('Not Found');
             } else {
-                console.log('Login Failed');
+                // console.log('Login Failed');
+                setErrMsg('Login Failed');
             }
         }
     };
 
     return (
         <div>
-            <LogInForm>
-                <form onSubmit={onSubmitAccount}>
-                    <h1>로그인</h1>
-                    <h3>Email Id</h3>
-                    <input
-                        type="text"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        onBlur={checkEmail}
-                    />
-                    <h3>Password</h3>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onBlur={checkPassword}
-                    />
-                    <button type="submit" disabled={loading}>
-                        로그인
-                    </button>
-                    {/* <button type="submit" disabled={loading}>로그인</button> */}
-                </form>
-            </LogInForm>
+            {success ? (
+                <section>
+                    <h1>You are logged in!</h1>
+                    <p>
+                        <Link to="/">HOME</Link>
+                    </p>
+                </section>
+            ) : (
+                <LogInForm>
+                    <p
+                        ref={errRef}
+                        className={errMsg ? 'errmsg' : 'offscreen'}
+                        aria-live="assertive"
+                    >
+                        {errMsg}
+                    </p>
+                    <form onSubmit={handleSubmit}>
+                        <h1>로그인</h1>
+                        <h3>Email Id</h3>
+                        <input
+                            type="text"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            onBlur={checkEmail}
+                        />
+                        <h3>Password</h3>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            onBlur={checkPassword}
+                        />
+                        <button type="submit">로그인</button>
+                    </form>
+                </LogInForm>
+            )}
         </div>
     );
 };
