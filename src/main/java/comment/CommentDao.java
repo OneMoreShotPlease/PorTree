@@ -15,17 +15,22 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import authentication.SimpleUser;
+import authentication.SimpleUserDao;
+
 public class CommentDao {
 
 	private JdbcTemplate jdbcTemplate;
+	private SimpleUserDao simpleUserDao;
 	private RowMapper<Comment> commentRowMapper = new RowMapper<Comment>() {
 
 		@Override
 		public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
 			// TODO Auto-generated method stub
+			SimpleUser simpleUser = simpleUserDao.selectById(rs.getLong("USER_ID"));
 			Comment comment = new Comment(
 					rs.getLong("PORTFOLIO_ID"),
-					rs.getLong("USER_ID"),
+					simpleUser,
 					rs.getTimestamp("PUBLISH_DATE").toLocalDateTime(),
 					rs.getString("CONTENTS")
 			);
@@ -35,8 +40,9 @@ public class CommentDao {
 		
 	};
 	
-	public CommentDao(DataSource dataSource) {
+	public CommentDao(DataSource dataSource, SimpleUserDao simpleUserDao) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		this.simpleUserDao = simpleUserDao;
 	}
 	
 	// 특정 댓글 불러오기
@@ -65,7 +71,7 @@ public class CommentDao {
 				String query = "insert into COMMENT (PORTFOLIO_ID, USER_ID, PUBLISH_DATE, CONTENTS) values (?, ?, ?, ?)";
 				PreparedStatement psmt = con.prepareStatement(query, new String[] {"COMMENT_ID"});
 				psmt.setLong(1, comment.getPortfolio_id());
-				psmt.setLong(2, comment.getUser_id());
+				psmt.setLong(2, comment.getUser().getId());
 				psmt.setTimestamp(3, Timestamp.valueOf(comment.getPublish_date()));
 				psmt.setString(4, comment.getContents());
 				

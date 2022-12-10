@@ -28,6 +28,8 @@ import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import authentication.JwtManager;
+import authentication.SimpleUser;
+import authentication.SimpleUserDao;
 import portfolio.RequestValidator;
 import portfolio.Portfolio;
 import portfolio.PortfolioDao;
@@ -39,12 +41,16 @@ import portfolio.PortfolioRequest;
 public class RestPortfolioAuthController {
 	private PortfolioDao portfolioDao;
 	private PortfolioRegisterService registerService;
+	private SimpleUserDao simpleUserDao;
 	
 	public void setPortfolioDao(PortfolioDao portfolioDao) {
 		this.portfolioDao = portfolioDao;
 	}
 	public void setRegisterService(PortfolioRegisterService registerSerivce) {
 		this.registerService = registerSerivce;
+	}
+	public void setSimpleUserDao(SimpleUserDao simpleUserDao) {
+		this.simpleUserDao = simpleUserDao;
 	}
 	
 	// 포트폴리오 작성
@@ -62,14 +68,15 @@ public class RestPortfolioAuthController {
 		}
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long user_id;
+		SimpleUser user;
 		try {
-			user_id = (Long) authentication.getPrincipal();
+			Long user_id = (Long) authentication.getPrincipal();
+			user = simpleUserDao.selectById(user_id);
 		} catch (NullPointerException e) {
 			String errorCodes = "Token Expired";
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
 		}
-		Long newPortfolio_id = registerService.regist(user_id, req);
+		Long newPortfolio_id = registerService.regist(user, req);
 		URI uri = URI.create("/api/portfolio/all/" + newPortfolio_id);
 		return ResponseEntity.created(uri).build();
 	}	
@@ -88,9 +95,10 @@ public class RestPortfolioAuthController {
 		}
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long user_id;
+		SimpleUser user;
 		try {
-			user_id = (Long) authentication.getPrincipal();
+			Long user_id = (Long) authentication.getPrincipal();
+			user = simpleUserDao.selectById(user_id);
 		} catch (NullPointerException e) {
 			String errorCodes = "Token Expired";
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
@@ -102,13 +110,13 @@ public class RestPortfolioAuthController {
 					.body(new ErrorResponse("no portfolio"));
 		}
 		
-		Long portfolio_user_id = portfolio.getUser_id();
-		if (portfolio_user_id != user_id) {
+		SimpleUser portfolio_user = portfolio.getUser();
+		if (portfolio_user.getId() != user.getId()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(new ErrorResponse("not proper user"));
 		}
 		
- 		Long updatePortfolio_id = registerService.update(user_id, portfolio_id, req);
+ 		Long updatePortfolio_id = registerService.update(user, portfolio_id, req);
 		URI uri = URI.create("/api/portfolio/all/" + updatePortfolio_id);
 		return ResponseEntity.created(uri).build();
 	}
@@ -124,16 +132,17 @@ public class RestPortfolioAuthController {
 		}
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long user_id;
+		SimpleUser user;
 		try {
-			user_id = (Long) authentication.getPrincipal();
+			Long user_id = (Long) authentication.getPrincipal();
+			user = simpleUserDao.selectById(user_id);
 		} catch (NullPointerException e) {
 			String errorCodes = "Token Expired";
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
 		}
 		
-		Long portfolio_user_id = portfolio.getUser_id();
-		if (portfolio_user_id != user_id) {
+		SimpleUser portfolio_user = portfolio.getUser();
+		if (portfolio_user.getId() != user.getId()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(new ErrorResponse("not proper user"));
 		}

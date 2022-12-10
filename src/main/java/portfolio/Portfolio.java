@@ -2,9 +2,11 @@ package portfolio;
 
 import java.time.LocalDateTime;
 
+import authentication.SimpleUser;
+
 public class Portfolio {
 	private Long portfolio_id;
-	private Long user_id;
+	private SimpleUser user;
 	private String title;
 	private LocalDateTime publish_date;
 	private String github = null;
@@ -12,9 +14,9 @@ public class Portfolio {
 	private String category = null;
 	private String description;
 	
-	public Portfolio(Long user_id, String title, LocalDateTime publish_date,
+	public Portfolio(SimpleUser user, String title, LocalDateTime publish_date,
 			String github, String demo, String category, String description) {
-		this.user_id = user_id;
+		this.user = user;
 		this.title = title;
 		this.publish_date = publish_date;
 		this.github = github;
@@ -30,8 +32,8 @@ public class Portfolio {
 		return portfolio_id;
 	}
 	
-	public Long getUser_id() {
-		return user_id;
+	public SimpleUser getUser() {
+		return user;
 	}
 	
 	public String getTitle() {

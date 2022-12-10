@@ -61,14 +61,15 @@ public class RestLikeController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("errorCodes = " + errorCodes));		
 		}
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long user_id;
+		SimpleUser user;
 		try {
-			user_id = (Long) authentication.getPrincipal();
+			Long user_id = (Long) authentication.getPrincipal();
+			user = simpleUserDao.selectById(user_id);
 		} catch (NullPointerException e) {
 			String errorCodes = "Token Expired";
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
 		}
-		Long like_id = registerService.press(liked_portfolio.getPortfolio_id(), user_id);
+		Long like_id = registerService.press(liked_portfolio.getPortfolio_id(), user);
 		if (like_id != null)
 			return ResponseEntity.status(HttpStatus.CREATED).build();
 		else
@@ -84,8 +85,7 @@ public class RestLikeController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new ErrorResponse("no portfolio"));
 		}
-		List<Integer> like = likeDao.selectByPortfolio(portfolio_id);
-		List<SimpleUser> user = simpleUserDao.selectByIdList(like);
-		return ResponseEntity.status(HttpStatus.OK).body(user);
+		List<SimpleUser> like = likeDao.selectByPortfolio(portfolio_id);
+		return ResponseEntity.status(HttpStatus.OK).body(like);
 	}
 }

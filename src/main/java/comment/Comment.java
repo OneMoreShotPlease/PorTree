@@ -6,13 +6,13 @@ import authentication.SimpleUser;
 public class Comment {
 	private Long comment_id;
 	private Long portfolio_id;
-	private Long user_id;
+	private SimpleUser user;
 	private LocalDateTime publish_date;
 	private String contents;
 	
-	public Comment(Long portfolio_id, Long user_id, LocalDateTime publish_date, String contents) {
+	public Comment(Long portfolio_id, SimpleUser user, LocalDateTime publish_date, String contents) {
 		this.portfolio_id = portfolio_id;
-		this.user_id = user_id;
+		this.user = user;
 		this.publish_date = publish_date;
 		this.contents = contents;
 	}
@@ -28,8 +28,8 @@ public class Comment {
 		return portfolio_id;
 	}
 	
-	public Long getUser_id() {
-		return user_id;
+	public SimpleUser getUser() {
+		return user;
 	}
 	
 	public LocalDateTime getPublish_date() {

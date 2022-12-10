@@ -1,13 +1,15 @@
 package like;
 
+import authentication.SimpleUser;
+
 public class Like {
 	private Long like_id;
 	private Long portfolio_id;
-	private Long user_id;
+	private SimpleUser user;
 	
-	public Like(Long portfolio_id, Long user_id) {
+	public Like(Long portfolio_id, SimpleUser user) {
 		this.portfolio_id = portfolio_id;
-		this.user_id = user_id;
+		this.user = user;
 	}
 	
 	public void setLike_id(Long id) {
@@ -21,7 +23,7 @@ public class Like {
 		return portfolio_id;
 	}
 	
-	public Long getUser_id() {
-		return user_id;
+	public SimpleUser getUser() {
+		return user;
 	}
 }

@@ -71,6 +71,7 @@ public class ControllerConfig {
 		RestPortfolioAuthController cont = new RestPortfolioAuthController();
 		cont.setPortfolioDao(portfolioDao);
 		cont.setRegisterService(portfolioRegSvc);
+		cont.setSimpleUserDao(simpleUserDao);
 		return cont;
 	}
 	
@@ -80,6 +81,7 @@ public class ControllerConfig {
 		cont.setCommentDao(commentDao);
 		cont.setRegisterService(commentRegSvc);
 		cont.setPortfolioDao(portfolioDao);
+		cont.setSimpleUserDao(simpleUserDao);
 		return cont;
 	}
 	

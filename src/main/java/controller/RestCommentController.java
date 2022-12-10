@@ -27,6 +27,8 @@ import comment.CommentRegisterService;
 import comment.CommentRequest;
 import portfolio.Portfolio;
 import portfolio.PortfolioDao;
+import authentication.SimpleUser;
+import authentication.SimpleUserDao;
 
 @RestController
 @RequestMapping("/api/comment/")
@@ -34,6 +36,7 @@ public class RestCommentController {
 	private CommentDao commentDao;
 	private CommentRegisterService registerService;
 	private PortfolioDao portfolioDao;
+	private SimpleUserDao simpleUserDao;
 	
 	public void setCommentDao(CommentDao commentDao) {
 		this.commentDao = commentDao;
@@ -43,6 +46,9 @@ public class RestCommentController {
 	}
 	public void setPortfolioDao(PortfolioDao portfolioDao) {
 		this.portfolioDao = portfolioDao;
+	}
+	public void setSimpleUserDao(SimpleUserDao simpleUserDao) {
+		this.simpleUserDao = simpleUserDao;
 	}
 	
 	// 댓글 작성
@@ -59,9 +65,12 @@ public class RestCommentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("errorCodes = " + errorCodes));		
 		}
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long user_id;
+		SimpleUser user;
 		try {
-			user_id = (Long) authentication.getPrincipal();
+			Long user_id = (Long) authentication.getPrincipal();
+			System.out.println(user_id);
+			user = simpleUserDao.selectById(user_id);
+			System.out.println(user);
 		} catch (NullPointerException e) {
 			String errorCodes = "Token Expired";
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
@@ -71,7 +80,7 @@ public class RestCommentController {
 			String errorCodes = "Portfolio is not existed";
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ErrorResponse("errorCodes = " + errorCodes));
 		}
-		Long comment_id = registerService.regist(req.getPortfolio_id(), user_id, req.getContents());
+		Long comment_id = registerService.regist(req.getPortfolio_id(), user, req.getContents());
 		URI uri = URI.create("/api/comment/all/" + comment_id);
 		return ResponseEntity.created(uri).build();
 	}
@@ -86,9 +95,10 @@ public class RestCommentController {
 		}
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long user_id;
+		SimpleUser user;
 		try {
-			user_id = (Long) authentication.getPrincipal();
+			Long user_id = (Long) authentication.getPrincipal();
+			user = simpleUserDao.selectById(user_id);
 		} catch (NullPointerException e) {
 			String errorCodes = "Token Expired";
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
@@ -99,13 +109,13 @@ public class RestCommentController {
 					.body(new ErrorResponse("no comment"));
 		}
 		
-		Long comment_user_id = comment.getUser_id();
-		if (comment_user_id != user_id) {
+		SimpleUser comment_user = comment.getUser();
+		if (comment_user.getId() != user.getId()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(new ErrorResponse("not proper user"));
 		}
 		
-		Long update_comment_id = registerService.update(comment_id, comment.getPortfolio_id(), user_id, contents.get("contents"));
+		Long update_comment_id = registerService.update(comment_id, comment.getPortfolio_id(), user, contents.get("contents"));
 		URI uri = URI.create("/api/comment/all/" + update_comment_id);
 		return ResponseEntity.created(uri).build();
 	}
@@ -121,16 +131,17 @@ public class RestCommentController {
 		}
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long user_id;
+		SimpleUser user;
 		try {
-			user_id = (Long) authentication.getPrincipal();
+			Long user_id = (Long) authentication.getPrincipal();
+			user = simpleUserDao.selectById(user_id);
 		} catch (NullPointerException e) {
 			String errorCodes = "Token Expired";
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
 		}
 		
-		Long comment_user_id = comment.getUser_id();
-		if (comment_user_id != user_id) {
+		SimpleUser comment_user = comment.getUser();
+		if (comment_user.getId() != user.getId()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(new ErrorResponse("not proper user"));
 		}

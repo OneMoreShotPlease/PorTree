@@ -15,14 +15,20 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import authentication.SimpleUser;
+import authentication.SimpleUserDao;
+
 public class PortfolioDao {
 
 	private JdbcTemplate jdbcTemplate;
+	private SimpleUserDao simpleUserDao;
+	
 	private RowMapper<Portfolio> portfolioRowMapper = new RowMapper<Portfolio>() {
 		@Override
 		public Portfolio mapRow(ResultSet rs, int rowNum) throws SQLException {
+			SimpleUser user = simpleUserDao.selectById(rs.getLong("USER_ID"));
 			Portfolio portfolio = new Portfolio(
-					rs.getLong("USER_ID"),
+					user,
 					rs.getString("TITLE"),
 					rs.getTimestamp("PUBLISH_DATE").toLocalDateTime(),
 					rs.getString("GITHUB"),
@@ -35,8 +41,9 @@ public class PortfolioDao {
 		}	
 	};	
 	
-	public PortfolioDao(DataSource dataSource) {
+	public PortfolioDao(DataSource dataSource, SimpleUserDao simpleUserDao) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		this.simpleUserDao = simpleUserDao;
 	}
 	
 	// 모든 portfolio 정보 불러오기
@@ -82,7 +89,7 @@ public class PortfolioDao {
 						"values (?, ?, ?, ?, ?, ?, ?)",
 						new String[] {"PORTFOLIO_ID"}
 				);
-				psmt.setLong(1,  portfolio.getUser_id());
+				psmt.setLong(1,  portfolio.getUser().getId());
 				psmt.setString(2,  portfolio.getTitle());
 				psmt.setTimestamp(3, Timestamp.valueOf(portfolio.getPublish_date()));
 				psmt.setString(4, portfolio.getGithub());

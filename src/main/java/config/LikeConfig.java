@@ -11,12 +11,12 @@ import like.LikeDao;
 import like.LikeRegisterService;
 
 @Configuration
-public class LikeConfig {
+public class LikeConfig extends UserConfig {
 	ApplicationContext ac = new AnnotationConfigApplicationContext(DatabaseConfig.class);
 	
 	@Bean
 	public LikeDao likeDao() {
-		return new LikeDao(ac.getBean(DataSource.class));
+		return new LikeDao(ac.getBean(DataSource.class), simpleUserDao());
 	}
 	
 	@Bean

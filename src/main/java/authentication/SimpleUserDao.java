@@ -36,11 +36,10 @@ public class SimpleUserDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-	public List<SimpleUser> selectByIdList(List<Integer> user_list){
-		List<SimpleUser> results = new ArrayList();
-		for (int i = 0; i < user_list.size(); i++) {
-			results.add(jdbcTemplate.query("SELECT * from `USER` where USER_ID = ?", simpleUserRowMapper, user_list.get(i)).get(0));
-		}
-		return results.isEmpty() ? null : results;
+	public SimpleUser selectById(Long user_id) {
+		List<SimpleUser> results = jdbcTemplate.query(
+				"SELECT * from `USER` where USER_ID = ?",
+				simpleUserRowMapper, user_id);
+		return results.isEmpty() ? null : results.get(0);
 	}
 }

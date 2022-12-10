@@ -11,12 +11,12 @@ import portfolio.PortfolioDao;
 import portfolio.PortfolioRegisterService;
 
 @Configuration
-public class PortfolioConfig {
+public class PortfolioConfig extends UserConfig {
 	ApplicationContext ac = new AnnotationConfigApplicationContext(DatabaseConfig.class);
 	
 	@Bean
 	public PortfolioDao portfolioDao() {
-		return new PortfolioDao(ac.getBean(DataSource.class));
+		return new PortfolioDao(ac.getBean(DataSource.class), simpleUserDao());
 	}
 	
 	@Bean
