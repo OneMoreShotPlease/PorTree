@@ -3,11 +3,16 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import moment from 'moment';
+import 'moment/locale/ko';
 
 const WriteProjPage = () => {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     const [userId, setUserId] = useState('');
+    const [nowTime, setNowTime] = useState(
+        moment().format('YYYY-MM-DD HH:mm:ss')
+    );
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,7 +22,10 @@ const WriteProjPage = () => {
 
     const handlesubmit = (e) => {
         e.preventDefault();
-        const empdata = { title, body, userId };
+        const temp = moment().format('YYYY-MM-DD HH:mm:ss');
+        setNowTime(temp);
+        console.log(temp);
+        const empdata = { title, body, userId, nowTime };
         fetch('http://localhost:8080/projects', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
@@ -25,6 +33,7 @@ const WriteProjPage = () => {
         })
             .then((res) => {
                 alert('Saved succesfully.');
+                console.log(nowTime);
                 navigate('/');
             })
             .catch((err) => {

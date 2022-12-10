@@ -1,6 +1,7 @@
 // 프로젝트 나열 + 검색 페이지
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from '../../components/Button';
 
 const PostListPage = () => {
     const [empdata, empdatachange] = useState(null);
@@ -40,15 +41,22 @@ const PostListPage = () => {
             .catch((err) => {
                 console.log(err.message);
             });
-    });
+    }, []);
     return (
         <>
-            <Link to="/write">Add new</Link>;
+            <Link to="/write">
+                <Button>Add new</Button>
+            </Link>
+
             <table>
                 <thead>
                     <tr>
-                        <td>id</td>
-                        <td>title</td>
+                        <td>
+                            <h1>id</h1>
+                        </td>
+                        <td>
+                            <h1>title</h1>
+                        </td>
                     </tr>
                 </thead>
                 <tbody>

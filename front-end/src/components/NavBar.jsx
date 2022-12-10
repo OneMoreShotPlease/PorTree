@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import Responsive from './Responsive';
 import Button from './Button';
 import { Link, useNavigate } from 'react-router-dom';
+import Avvvatars from 'avvvatars-react';
+import { useCookies } from 'react-cookie';
 
 const HeaderBlock = styled.div`
     position: fixed;
@@ -33,10 +35,15 @@ const Spacer = styled.div`
 `;
 
 const Nav = ({ auth, setAuth }) => {
+    const [cookies, setCookie, removeCookie] = useCookies(['id']);
     const navigate = useNavigate;
     // const goToLogin = () => {
     //     navigate('/login');
     // };
+    const authCheck = () => {
+        // 페이지에 들어올때 쿠키로 사용자 체크
+        const token = cookies.id; // 쿠키에서 id 를 꺼내기
+    };
     const doLogout = () => {
         // let token = localStorage.getItem('token');
         setAuth(false);
@@ -52,7 +59,14 @@ const Nav = ({ auth, setAuth }) => {
                     </Link>
                     <div className="right">
                         {auth ? (
-                            <Button onClick={() => doLogout()}>로그아웃</Button>
+                            <>
+                                <Button onClick={() => doLogout()}>
+                                    로그아웃
+                                </Button>
+                                <Link to="/info">
+                                    <Avvvatars value="best_user@gmail.com" />
+                                </Link>
+                            </>
                         ) : (
                             <>
                                 <Link to="/login">
