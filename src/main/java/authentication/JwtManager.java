@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -18,9 +20,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.JwtSigner;
 
 @Component
+@PropertySource("classpath:key.properties")
 public class JwtManager {
 
-	private final String securityKey = "Hyunwoo Babo";
+	@Value("${key.securityKey}")
+	private String securityKey;
 	private final Long Access_Token_Duration = 1000 * 60L * 60L * 1L; // 1시간
 	private final Long Refresh_Token_Duration = 1000 * 60L * 60L * 1L * 24L * 14L; // 2주
 	

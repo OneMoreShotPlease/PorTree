@@ -1,14 +1,16 @@
 package config;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
+@PropertySource("classpath:datasource.properties")
 public class DatabaseConfig {
 	
-	/*
-	@Value("${db.driver}")
+	@Value("${db.driverClassName}")
 	private String driverClassName;
 	@Value("${db.url}")
 	private String url;
@@ -16,11 +18,6 @@ public class DatabaseConfig {
 	private String username;
 	@Value("${db.password}")
 	private String password;
-	*/
-	private String driverClassName = "com.mysql.jdbc.Driver";
-	private String url = "jdbc:mysql://localhost/portree?characterEncoding=utf8&enabledTLSProtocols=TLSv1.2";
-	private String username = "portree";
-	private String password = "portree";
 	
 	@Bean
 	public DataSource dataSource() {
