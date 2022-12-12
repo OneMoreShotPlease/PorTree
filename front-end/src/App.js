@@ -12,7 +12,9 @@ import Register from './pages/user/Register';
 import Nav from './components/NavBar';
 import styled from 'styled-components';
 import Responsive from './components/Responsive';
-import AuthProvider from './context/AuthProvider';
+import Layout from './components/Layout';
+import RequireAuth from './components/RequireAuth';
+import Unauthorized from './pages/user/Unauthorized';
 
 const Wrapper = styled(Responsive)`
     height: 100%;
@@ -24,29 +26,26 @@ const Wrapper = styled(Responsive)`
 `;
 
 function App() {
-    const [auth, setAuth] = useState(false);
-    const [user, setUser] = useState();
-    useEffect(() => {
-        console.log('로그인 인증값', auth);
-    }, [auth]);
     return (
         <div className="App">
-            <Nav auth={auth} setAuth={setAuth} />
-            <Wrapper>
-                <Routes>
-                    <Route path="/" element={<MainPage auth={auth} />} />
-                    <Route
-                        path="/login"
-                        element={<Login setAuth={setAuth} />}
-                    />
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    {/* public routes */}
+                    <Route path="/" element={<MainPage />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/list" element={<PostListPage />} />
-                    <Route path="/info" element={<UserInfoPage />} />
-                    <Route path="/write" element={<WriteProjPage />} />
-                    <Route path="/post/:empid" element={<PostPage />} />
-                    <Route path="/edit/:empid" element={<EditPage />} />
-                </Routes>
-            </Wrapper>
+                    <Route path="unauthorized" element={<Unauthorized />} />
+
+                    {/* we want to protect these routes */}
+                    <Route element={<RequireAuth />}>
+                        <Route path="/info" element={<UserInfoPage />} />
+                        <Route path="/write" element={<WriteProjPage />} />
+                        <Route path="/post/:empid" element={<PostPage />} />
+                        <Route path="/edit/:empid" element={<EditPage />} />
+                    </Route>
+                </Route>
+            </Routes>
         </div>
     );
 }

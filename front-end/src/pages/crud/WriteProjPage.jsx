@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/ko';
+import EditorBox from '../../components/EditorBox';
 
 const WriteProjPage = () => {
     const [title, setTitle] = useState('');
@@ -57,9 +58,10 @@ const WriteProjPage = () => {
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                 ></input>
+                <EditorBox />
                 <button type="submit">Save</button>
-                <Link to="/list">Back</Link>
             </form>
+            <Link to="/list">Back</Link>
         </div>
     );
 };

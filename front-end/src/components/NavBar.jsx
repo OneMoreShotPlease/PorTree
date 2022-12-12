@@ -4,7 +4,10 @@ import Button from './Button';
 import { Link, useNavigate } from 'react-router-dom';
 import Avvvatars from 'avvvatars-react';
 import { useCookies } from 'react-cookie';
-
+import useAuth from '../hooks/useAuth';
+import AuthContext from '../context/AuthProvider';
+import { useContext } from 'react';
+import LoginCheck from '../pages/user/LoginCheck';
 const HeaderBlock = styled.div`
     position: fixed;
     display: block;
@@ -34,9 +37,11 @@ const Spacer = styled.div`
     height: 4rem;
 `;
 
-const Nav = ({ auth, setAuth }) => {
+const Nav = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['id']);
     const navigate = useNavigate;
+    const { setAuth } = useContext(AuthContext);
+    const { auth } = useAuth();
     // const goToLogin = () => {
     //     navigate('/login');
     // };
@@ -45,10 +50,9 @@ const Nav = ({ auth, setAuth }) => {
         const token = cookies.id; // 쿠키에서 id 를 꺼내기
     };
     const doLogout = () => {
-        // let token = localStorage.getItem('token');
-        setAuth(false);
-        localStorage.clear();
+        setAuth({});
         navigate('/');
+        console.log(auth?.user?.find);
     };
     return (
         <>
@@ -58,13 +62,14 @@ const Nav = ({ auth, setAuth }) => {
                         <div className="logo">PORTREE</div>
                     </Link>
                     <div className="right">
-                        {auth ? (
+                        {auth?.user ? (
                             <>
                                 <Button onClick={() => doLogout()}>
                                     로그아웃
                                 </Button>
+                                <LoginCheck />
                                 <Link to="/info">
-                                    <Avvvatars value="best_user@gmail.com" />
+                                    <Avvvatars value={auth?.user?.email} />
                                 </Link>
                             </>
                         ) : (

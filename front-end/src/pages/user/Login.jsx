@@ -4,8 +4,9 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import AuthContext from '../../context/AuthProvider';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
+import useAuth from '../../hooks/useAuth';
 import { useCookies } from 'react-cookie';
 
 const LogInForm = styled.div`
@@ -68,14 +69,14 @@ const LogInForm = styled.div`
 `;
 
 const Login = () => {
-    const { setAuth } = useContext(AuthContext);
-    const [cookies, setCookie] = useCookies(['id']);
+    const { setAuth } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [success, setSuccess] = useState(false);
     const [errMsg, setErrMsg] = useState('');
-
+    const [cookies, setCookie] = useCookies(['access-token']);
     const errRef = useRef();
 
     useEffect(() => {
@@ -101,25 +102,39 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(email, password);
+        const data = {
+            email: email,
+            password: password,
+        };
         try {
             const resp = await axios.post(
                 'http://43.201.121.70:8080/portree/api/user/login',
-                JSON.stringify({ email, password }),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    // withCredentials: true,
-                }
+                { email: email, password: password },
+                {}
             );
             console.log(JSON.stringify(resp?.data));
-            const accessToken = resp?.data?.accessToken;
             const user = resp?.data;
-            setAuth({ email, password, user, accessToken });
+            console.log(resp.headers['id']);
+            const isLogin = true;
+
+            axios.defaults.headers.common['Authorization'] =
+                'Bearer' + resp.headers['access_token'];
+
+            // refresh_token + access_token 저장해주기
+            localStorage.setItem(
+                'refresh-token',
+                resp.headers['refresh_token']
+            );
+            setCookie('id', resp.headers['access_token']);
+
+            setAuth({ email, password, user, isLogin });
             setEmail('');
             setPassword('');
-            setSuccess(true);
+            navigate(from, { replace: true });
         } catch (err) {
             let status = err.response?.status;
             console.log(status);
+            console.log(err);
             // if (status === 200) {
             //     console.log('로그인');
             if (status === 401) {
@@ -135,47 +150,50 @@ const Login = () => {
                 // console.log('Login Failed');
                 setErrMsg('Login Failed');
             }
+            errRef.current.focus();
         }
     };
 
     return (
         <div>
-            {success ? (
+            {/* {success ? (
                 <section>
                     <h1>You are logged in!</h1>
                     <p>
                         <Link to="/">HOME</Link>
                     </p>
                 </section>
-            ) : (
-                <LogInForm>
-                    <p
-                        ref={errRef}
-                        className={errMsg ? 'errmsg' : 'offscreen'}
-                        aria-live="assertive"
-                    >
-                        {errMsg}
-                    </p>
-                    <form onSubmit={handleSubmit}>
-                        <h1>로그인</h1>
-                        <h3>Email Id</h3>
-                        <input
-                            type="text"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            onBlur={checkEmail}
-                        />
-                        <h3>Password</h3>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            onBlur={checkPassword}
-                        />
-                        <button type="submit">로그인</button>
-                    </form>
-                </LogInForm>
-            )}
+            ) : ( */}
+            <LogInForm>
+                <p
+                    ref={errRef}
+                    className={errMsg ? 'errmsg' : 'offscreen'}
+                    aria-live="assertive"
+                >
+                    {errMsg}
+                </p>
+                <form onSubmit={handleSubmit}>
+                    <h1>로그인</h1>
+                    <h3>Email Id</h3>
+                    <input
+                        type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="off"
+                        onBlur={checkEmail}
+                    />
+                    <h3>Password</h3>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="off"
+                        onBlur={checkPassword}
+                    />
+                    <button type="submit">로그인</button>
+                </form>
+            </LogInForm>
+            {/* )} */}
         </div>
     );
 };

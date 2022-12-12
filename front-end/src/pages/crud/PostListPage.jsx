@@ -31,12 +31,13 @@ const PostListPage = () => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:8080/projects/')
+        fetch('http://43.201.121.70:8080/portree/api/portfolio/all/')
             .then((res) => {
                 return res.json();
             })
             .then((resp) => {
                 empdatachange(resp);
+                console.log(resp);
             })
             .catch((err) => {
                 console.log(err.message);
