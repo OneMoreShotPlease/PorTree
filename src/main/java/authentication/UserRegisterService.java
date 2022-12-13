@@ -26,4 +26,11 @@ public class UserRegisterService {
 		return newUser.getId();
 	}
 
+	public Long update(User user, UserRequest req) {
+		User update_user =  new User(
+				req.getName(), req.getPicture(), req.getEmail(), req.getPassword(), req.getGithub(), req.getField());
+		update_user.setId(user.getId());
+		userDao.update(update_user);
+		return user.getId();
+	}
 }

@@ -31,8 +31,9 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 				.allowedOrigins(frontOrigin)
-				.allowedHeaders("*")
+				.allowedHeaders("Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization")
 				.exposedHeaders("access_token", "refresh_token")
+				.allowedMethods("GET", "POST", "DELETE", "OPTIONS")
 				.allowCredentials(true);
 	}
 }

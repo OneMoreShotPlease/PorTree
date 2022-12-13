@@ -79,18 +79,6 @@ public class RestUserController {
 		}
 	}
 	
-	// user-detail
-	@GetMapping("/{user_id}")
-	@ApiOperation(value = "마이페이지")
-	public ResponseEntity<Object> user(@PathVariable Long user_id) {
-		User user = userDao.selectById(user_id);
-		if (user == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ErrorResponse("No User"));
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(user);
-	}
-	
 	// login-in
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인")
@@ -144,5 +132,44 @@ public class RestUserController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
 		}	
 	return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}	
+	
+	// user-detail
+	@GetMapping("/{user_id}")
+	@ApiOperation(value = "마이페이지")
+	public ResponseEntity<Object> user(@PathVariable Long user_id) {
+		User user = userDao.selectById(user_id);
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponse("No User"));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(user);
+	}
+	
+	// user update
+	@PostMapping()
+	@ApiOperation(value = "내 정보 수정")
+	public ResponseEntity<Object> updateUser(@RequestBody UserRequest req, Errors errors) {
+		new RequestValidator().validate(req, errors);
+		if (errors.hasErrors()) {
+			String errorCodes = errors.getAllErrors()
+					.stream()
+					.map(error -> error.getCodes()[0])
+					.collect(Collectors.joining("."));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("errorCodes = " + errorCodes));		
+		}
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Long user_id;
+		try {
+			user_id = (Long) authentication.getPrincipal();
+		} catch (NullPointerException e) {
+			String errorCodes = "Token Expired";
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("errorCodes = " + errorCodes));
+		}
+		User user = userDao.selectById(user_id);
+		Long update_id = registerService.update(user, req);
+		URI uri = URI.create("/api/user/" + update_id);
+		return ResponseEntity.created(uri).build();
 	}
 }

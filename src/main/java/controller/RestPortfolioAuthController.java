@@ -85,14 +85,7 @@ public class RestPortfolioAuthController {
 	@PostMapping("/{portfolio_id}")
 	@ApiOperation(value = "특정 포트폴리오 수정")
 	public ResponseEntity<Object> updatePortfolio(@PathVariable Long portfolio_id, @RequestBody PortfolioRequest req, Errors errors) {
-		new RequestValidator().validate(req, errors);
-		if (errors.hasErrors()) {
-			String errorCodes = errors.getAllErrors()
-					.stream()
-					.map(error -> error.getCodes()[0])
-					.collect(Collectors.joining("."));
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("errorCodes = " + errorCodes));		
-		}
+r
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		SimpleUser user;

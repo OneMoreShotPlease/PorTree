@@ -21,6 +21,15 @@ public class User extends SimpleUser {
 		this.field = field;
 	}
 	
+	public User(String email, String password, String name,
+			String github, String field, String picture) {
+		super(name, picture);
+		this.email = email;
+		this.password = password;
+		this.github = github;
+		this.field = field;
+	}
+	
 	public String getEmail() {
 		return email;
 	}

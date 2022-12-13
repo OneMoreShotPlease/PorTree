@@ -6,6 +6,7 @@ public class UserRequest {
 	private String password;
 	private String confirmPassword;
 	private String name;
+	private String picture = null;
 	private String github = null;
 	private String field = null;
 	
@@ -49,6 +50,13 @@ public class UserRequest {
 	}
 	public void setField(String field) {
 		this.field = field;
+	}
+	
+	public String getPicture() {
+		return picture;
+	}
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 	
 	public boolean isPasswordEqualToConfirmPassword() {

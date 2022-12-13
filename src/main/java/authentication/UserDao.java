@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,4 +100,11 @@ public class UserDao {
 				userRowMapper, user_id);
 		return results.isEmpty() ? null : results.get(0);
 	}
+
+	public void update(User user) {
+		jdbcTemplate.update(
+				"update `USER` set PASSWORD = ?, NAME = ?, GITHUB = ?, FIELD = ?, PICTURE = ? where USER_ID = ?",
+				user.getPassword(), user.getName(), user.getGithub(), user.getField(), user.getPicture(), user.getId());			
+	}
+
 }
